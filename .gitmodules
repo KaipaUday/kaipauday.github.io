@@ -1,0 +1,6 @@
+[submodule "Backend-REST-API"]
+	path = Backend-REST-API
+	url = https://github.com/KaipaUday/PortfolioSite-API.git
+[submodule "portfolio-frontend/tests"]
+	path = portfolio-frontend/tests
+	url = https://github.com/KaipaUday/Regression_test_protfolio_site.git
