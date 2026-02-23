@@ -1,5 +1,6 @@
 import type { PageLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
+import { getApiBaseUrl } from '$lib/config';
 
 export const ssr = false;
 
@@ -67,9 +68,11 @@ export const load: PageLoad = async ({ params, fetch }) => {
 		redirectHome('invalid_code');
 	}
 
-	const safeResponse = await fetchWithRetry(fetch, `http://127.0.0.1:5000/${encodeURIComponent(code)}`).catch(
-		() => redirectHome('service_unavailable')
-	);
+	const apiBaseUrl = getApiBaseUrl();
+	const safeResponse = await fetchWithRetry(
+		fetch,
+		`${apiBaseUrl}/${encodeURIComponent(code)}`
+	).catch(() => redirectHome('service_unavailable'));
 
 	let payload: unknown;
 	try {
