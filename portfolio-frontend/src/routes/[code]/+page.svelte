@@ -1,4 +1,8 @@
 <script lang="ts">
+	type Attachment ={
+		name:string;
+		url:string;
+	}
 	type Experience = {
 		company: string;
 		role: string;
@@ -7,6 +11,8 @@
 		to: string;
 		points: string[];
 		skills: string[];
+		links: Attachment[];
+
 	};
 
 	type Education = {
@@ -17,6 +23,8 @@
 		to: string;
 		points: string[];
 		skills: string[];
+		links: Attachment[];
+
 	};
 
 	type Project = {
@@ -24,6 +32,7 @@
 		description: string;
 		duration: string;
 		skills: string[];
+		links: Attachment[];
 	};
 
 	type PortfolioData = {
@@ -44,6 +53,18 @@
 		return value.map((item) => String(item ?? '')).filter(Boolean);
 	};
 
+	const normalizeAttachments =  (value: unknown): Attachment[] => {
+		if (!value) return [];
+		
+		return Object.entries(value).map((key,val) => {	
+			return {
+				name: String(Object.values(key)[0]),
+				url:String(Object.values(key)[1])
+
+			};
+		// });
+		});
+	};
 	const normalizeExperience = (value: unknown): Experience[] => {
 		if (!Array.isArray(value)) return [];
 		return value.map((item) => {
@@ -55,7 +76,9 @@
 				from: String(exp.from ?? ''),
 				to: String(exp.to ?? ''),
 				points: toStringArray(exp.points),
-				skills: toStringArray(exp.skills)
+				skills: toStringArray(exp.skills),
+				links: normalizeAttachments(exp.links)
+
 			};
 		});
 	};
@@ -71,7 +94,9 @@
 				from: String(edu.from ?? ''),
 				to: String(edu.to ?? ''),
 				points: toStringArray(edu.points),
-				skills: toStringArray(edu.skills)
+				skills: toStringArray(edu.skills),
+				links: normalizeAttachments(edu.links)
+
 			};
 		});
 	};
@@ -84,7 +109,8 @@
 				name: String(project.name ?? ''),
 				description: String(project.description ?? ''),
 				duration: String(project.duration ?? ''),
-				skills: toStringArray(project.skills)
+				skills: toStringArray(project.skills),
+				links: normalizeAttachments(project.links)
 			};
 		});
 	};
@@ -296,9 +322,13 @@
 
 	{#if currentSlide === 'intro'}
 		<section class="slide">
-			<h1>{portfolio.name || 'Portfolio Overview'}</h1>
-			<p>{portfolio.summary || 'Welcome to my guided portfolio walkthrough.'}</p>
+			<div class="summary">
+				{@html portfolio.summary}
+			</div>
 			<div class="meta">
+				{#if portfolio.name}
+					<span>{portfolio.name}</span>
+				{/if}
 				{#if portfolio.address}
 					<span>{portfolio.address}</span>
 				{/if}
@@ -312,17 +342,17 @@
 					<span>DOB: {portfolio.dob}</span>
 				{/if}
 				{#if availableViews !== null}
-					<span>Views remaining: {availableViews}</span>
+					<span>Available views: {availableViews}</span>
 				{/if}
 			</div>
 			<div class="nav">
-				<button class="nav-btn nav-next" onclick={goToMenu}>Next</button>
+				<button class="nav-btn nav-next" onclick={goToMenu}>Proceed &gt;</button>
 			</div>
 		</section>
 	{:else if currentSlide === 'menu'}
 		<section class="slide">
-			<h2>Main Menu</h2>
-			<p>Select each section to unlock the certification slide.</p>
+			<h2> Menu</h2>
+			<p>click on the tile to view the qualifacation in that section.</p>
 			<div class="menu-grid">
 				<button
 					class="menu-option"
@@ -330,7 +360,7 @@
 					class:not-viewed={!completed.experience}
 					onclick={() => openDetail('experience')}
 				>
-					Experience
+					Work Experiences
 					<span class="state">{completed.experience ? 'Viewed' : 'Not viewed'}</span>
 				</button>
 				<button
@@ -339,7 +369,7 @@
 					class:not-viewed={!completed.projects}
 					onclick={() => openDetail('projects')}
 				>
-					Projects
+					Recent Projects
 					<span class="state">{completed.projects ? 'Viewed' : 'Not viewed'}</span>
 				</button>
 				<button
@@ -348,14 +378,14 @@
 					class:not-viewed={!completed.education}
 					onclick={() => openDetail('education')}
 				>
-					Education
+					Educational qualifications
 					<span class="state">{completed.education ? 'Viewed' : 'Not viewed'}</span>
 				</button>
 			</div>
 			<div class="nav">
 				<button class="nav-btn nav-back" onclick={goToIntro}>&lt; Back</button>
 				<button class="nav-btn nav-next" onclick={goToCertifications} disabled={!allDetailsCompleted}>
-					Next
+					Next &gt;
 				</button>
 			</div>
 		</section>
@@ -371,13 +401,20 @@
 					<h3>{item.company}</h3>
 					<p class="sub">{item.role} | {item.location}</p>
 					<p class="sub">{item.from} - {item.to}</p>
-					<ul>
+					<ul style="list-style-type: disc;">
 						{#each item.points as point}
 							<li>{point}</li>
 						{/each}
 					</ul>
 					{#if item.skills.length}
 						<p class="chips">{item.skills.join(' · ')}</p>
+					{/if}
+					<br>
+					{#if item.links.length}
+					📎 →
+						{#each item.links as attachment}
+						<a href={attachment.url}> {attachment.name} 🔗</a>
+						{/each}
 					{/if}
 				</article>
 			{/if}
@@ -395,7 +432,7 @@
 					onclick={() => goToNextItem('experience')}
 					disabled={!canGoNextItem('experience')}
 				>
-					Next
+					Next &gt;
 				</button>
 			</div>
 		</section>
@@ -416,6 +453,13 @@
 					{#if item.skills.length}
 						<p class="chips">{item.skills.join(' · ')}</p>
 					{/if}
+					<br>
+					{#if item.links.length}
+					📎 →
+						{#each item.links as attachment}
+						<a href={attachment.url}> {attachment.name} 🔗</a>
+						{/each}
+					{/if}
 				</article>
 			{/if}
 			<div class="nav">
@@ -432,7 +476,7 @@
 					onclick={() => goToNextItem('projects')}
 					disabled={!canGoNextItem('projects')}
 				>
-					Next
+					Next &gt;
 				</button>
 			</div>
 		</section>
@@ -448,13 +492,20 @@
 					<h3>{item.university}</h3>
 					<p class="sub">{item.course}</p>
 					<p class="sub">{item.location} | {item.from} - {item.to}</p>
-					<ul>
+					<ul style="list-style-type: disc;">
 						{#each item.points as point}
 							<li>{point}</li>
 						{/each}
 					</ul>
 					{#if item.skills.length}
 						<p class="chips">{item.skills.join(' · ')}</p>
+					{/if}
+					<br>
+					{#if item.links.length}
+					📎 →
+						{#each item.links as attachment}
+						<a href={attachment.url}> {attachment.name} 🔗</a>
+						{/each}
 					{/if}
 				</article>
 			{/if}
@@ -472,7 +523,7 @@
 					onclick={() => goToNextItem('education')}
 					disabled={!canGoNextItem('education')}
 				>
-					Next
+					Next &gt;
 				</button>
 			</div>
 		</section>
@@ -490,7 +541,7 @@
 			{/if}
 			<div class="nav">
 				<button class="nav-btn nav-back" onclick={goToMenu}>&lt; Back</button>
-				<button class="nav-btn nav-next" onclick={goToEnd}>Next</button>
+				<button class="nav-btn nav-next" onclick={goToEnd}>Next &gt;</button>
 			</div>
 		</section>
 	{:else}
@@ -633,7 +684,7 @@
 
 	.nav-btn:hover,
 	.menu-option:hover {
-		background: #f1f5f9;
+		background: #a0b9ee;
 		border-color: #94a3b8;
 	}
 
@@ -649,6 +700,7 @@
 
 	.menu-option.viewed {
 		opacity: 1;
+		background: #a0b9ee;
 	}
 
 	.menu-option.not-viewed {
@@ -661,7 +713,34 @@
 		opacity: 0.8;
 		margin-top: 4px;
 	}
+	.summary :global(h1) {
+    font-size: 28px;
+    font-weight: 700;
+	}
 
+	.summary :global(h2) {
+		font-size: 22px;
+		font-weight: 600;
+	}
+
+	.summary :global(h3) {
+		font-size: 18px;
+		font-weight: 600;
+	}
+
+	.summary :global(p) {
+		line-height: 1.6;
+		margin-bottom: 0.75rem;
+		text-align: justify; 
+	}
+
+	.summary :global(strong) {
+		font-weight: 700;
+	}
+
+	.summary :global(ul) {
+		padding-left: 1.25rem;
+	}
 	@media (max-width: 720px) {
 		.menu-grid {
 			grid-template-columns: 1fr;
