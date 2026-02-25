@@ -86,6 +86,7 @@
 		If you need access, email
 		<a
 			href="mailto:uday.kaipa.1@gmail.com?subject=Access Code Request to your portfolio website&body=Hi, Please send me the access code for your portfolio website."
+			class="text-blue-600"
 			>uday.kaipa.1@gmail.com</a
 		>.
 	</p>

@@ -365,21 +365,21 @@
 				</button>
 				<button
 					class="menu-option"
-					class:viewed={completed.projects}
-					class:not-viewed={!completed.projects}
-					onclick={() => openDetail('projects')}
-				>
-					Recent Projects
-					<span class="state">{completed.projects ? 'Viewed' : 'Not viewed'}</span>
-				</button>
-				<button
-					class="menu-option"
 					class:viewed={completed.education}
 					class:not-viewed={!completed.education}
 					onclick={() => openDetail('education')}
 				>
 					Educational qualifications
 					<span class="state">{completed.education ? 'Viewed' : 'Not viewed'}</span>
+				</button>
+				<button
+					class="menu-option"
+					class:viewed={completed.projects}
+					class:not-viewed={!completed.projects}
+					onclick={() => openDetail('projects')}
+				>
+					Recent Projects
+					<span class="state">{completed.projects ? 'Viewed' : 'Not viewed'}</span>
 				</button>
 			</div>
 			<div class="nav">
@@ -413,7 +413,7 @@
 					{#if item.links.length}
 					📎 →
 						{#each item.links as attachment}
-						<a href={attachment.url}> {attachment.name} 🔗</a>
+						<a href={attachment.url} target="_blank" rel="noopener noreferrer" class="text-blue-600"> {attachment.name} 🔗</a>
 						{/each}
 					{/if}
 				</article>
@@ -457,7 +457,7 @@
 					{#if item.links.length}
 					📎 →
 						{#each item.links as attachment}
-						<a href={attachment.url}> {attachment.name} 🔗</a>
+						<a href={attachment.url}  target="_blank" rel="noopener noreferrer" class="text-blue-600"> {attachment.name} 🔗</a>
 						{/each}
 					{/if}
 				</article>
@@ -504,7 +504,7 @@
 					{#if item.links.length}
 					📎 →
 						{#each item.links as attachment}
-						<a href={attachment.url}> {attachment.name} 🔗</a>
+						<a href={attachment.url} target="_blank" rel="noopener noreferrer" class="text-blue-600"> {attachment.name} 🔗</a>
 						{/each}
 					{/if}
 				</article>
@@ -533,7 +533,7 @@
 			{#if portfolio.certifications.length === 0}
 				<p>No certifications listed.</p>
 			{:else}
-				<ul>
+				<ul style="list-style-type: disc;">
 					{#each portfolio.certifications as cert}
 						<li>{cert}</li>
 					{/each}
@@ -546,8 +546,16 @@
 		</section>
 	{:else}
 		<section class="slide">
-			<h2>End</h2>
-			<p>Thanks for reviewing my portfolio walkthrough.</p>
+			<!-- <h2>End</h2> -->
+			<p>Thanks for reviewing my portfolio walkthrough. 🎉</p>
+			<p>
+		I would really appreciate comments/feedback. 📧:
+		<a
+			href="mailto:uday.kaipa.1@gmail.com?subject=Comments w.r.t your portfolio website&body=Hi,"
+			class="text-blue-600"
+			>uday.kaipa.1@gmail.com</a
+		>.
+	</p>
 			<div class="nav">
 				<button class="nav-btn nav-middle" onclick={goToIntro}>Start Over</button>
 			</div>
