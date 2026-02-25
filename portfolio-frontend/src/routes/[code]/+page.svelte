@@ -446,10 +446,11 @@
 				{@const item = portfolio.project[sectionIndex.projects]}
 				<article class="card">
 					<h3>{item.name}</h3>
-					<p>{item.description}</p>
 					{#if item.duration}
 						<p class="sub">Duration: {item.duration}</p>
 					{/if}
+					<p>{item.description}</p>
+
 					{#if item.skills.length}
 						<p class="chips">{item.skills.join(' · ')}</p>
 					{/if}
@@ -596,7 +597,6 @@
 		background: #ffffff;
 	}
 
-	.slide h1,
 	.slide h2 {
 		margin: 0 0 10px;
 	}
